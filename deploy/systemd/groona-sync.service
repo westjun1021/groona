@@ -1,0 +1,10 @@
+[Unit]
+Description=GROONA Data Sync
+After=network.target
+[Service]
+WorkingDirectory=/opt/groona/backend
+EnvironmentFile=/opt/groona/.env
+ExecStart=/opt/groona/.venv/bin/python scheduler.py
+Restart=always
+[Install]
+WantedBy=multi-user.target

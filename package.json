@@ -1,0 +1,12 @@
+{
+  "name": "groona-4-commercial",
+  "private": true,
+  "workspaces": [
+    "apps/mobile"
+  ],
+  "scripts": {
+    "mobile": "npm --workspace apps/mobile run start",
+    "mobile:android": "npm --workspace apps/mobile run android",
+    "mobile:ios": "npm --workspace apps/mobile run ios"
+  }
+}
