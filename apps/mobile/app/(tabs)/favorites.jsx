@@ -1,10 +1,14 @@
 
-import React,{useCallback,useState} from "react";
+import React,{useCallback,useMemo,useRef,useState} from "react";
 import {SafeAreaView,FlatList,Text,View,StyleSheet,RefreshControl} from "react-native";
 import {router,useFocusEffect} from "expo-router";
-import {api,token} from "../../src/api";import {C} from "../../src/theme";import ActivityCard from "../../src/ActivityCard";
-import {ListSkeleton,Empty,friendlyError,alertError} from "../../src/ui";
+import {api,token} from "../../src/api";import {useTheme} from "../../src/theme";import ActivityCard from "../../src/ActivityCard";
+import {ListSkeleton,Empty,friendlyError,alertError,useToast} from "../../src/ui";import {useScrollTopOnRetap} from "../../src/tabs";
 export default function Favorites(){
+ const {C}=useTheme();const s=useMemo(()=>styles(C),[C]);
+ const toast=useToast();
+ const listRef=useRef(null);
+ useScrollTopOnRetap(listRef);
  const [rows,setRows]=useState([]),[logged,setLogged]=useState(false);
  const [loading,setLoading]=useState(true),[refreshing,setRefreshing]=useState(false),[error,setError]=useState(null);
  const load=useCallback(async()=>{
@@ -20,11 +24,12 @@ export default function Favorites(){
  const onRefresh=useCallback(async()=>{setRefreshing(true);await load();setRefreshing(false)},[load]);
  async function toggle(id){
   const prev=rows;setRows(p=>p.filter(x=>x.id!==id));
-  try{await api.toggleFavorite(id)}catch(e){setRows(prev);alertError(e,"찜을 변경하지 못했어요")}
+  try{await api.toggleFavorite(id);toast("찜을 해제했어요")}catch(e){setRows(prev);alertError(e,"찜을 변경하지 못했어요")}
  }
  const header=<View><Text style={s.title}>찜한 프로그램</Text><Text style={s.desc}>관심 있는 활동을 저장해 두고 언제든 다시 확인하세요.</Text>{!loading&&logged&&rows.length>0?<Text style={s.count}>{rows.length}개</Text>:null}</View>;
  return <SafeAreaView style={s.safe}>
   <FlatList
+   ref={listRef}
    data={loading?[]:rows}
    keyExtractor={x=>x.id}
    renderItem={({item})=><ActivityCard x={item} favorite onToggleFavorite={toggle}/>}
@@ -38,4 +43,4 @@ export default function Favorites(){
   />
  </SafeAreaView>
 }
-const s=StyleSheet.create({safe:{flex:1,backgroundColor:C.bg},content:{padding:16,paddingBottom:100},title:{fontSize:26,fontWeight:"900",color:C.navy},desc:{fontSize:11.5,color:C.muted,lineHeight:19,marginTop:5,marginBottom:14},count:{fontSize:10.5,color:C.muted,marginBottom:9}});
+const styles=C=>StyleSheet.create({safe:{flex:1,backgroundColor:C.bg},content:{padding:16,paddingBottom:100},title:{fontSize:26,fontWeight:"900",color:C.navy},desc:{fontSize:11.5,color:C.muted,lineHeight:19,marginTop:5,marginBottom:14},count:{fontSize:10.5,color:C.muted,marginBottom:9}});

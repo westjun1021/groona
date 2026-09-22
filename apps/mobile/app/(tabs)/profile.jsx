@@ -1,9 +1,10 @@
 
-import React,{useCallback,useState} from "react";
+import React,{useCallback,useMemo,useState} from "react";
 import {SafeAreaView,ScrollView,Text,View,TouchableOpacity,StyleSheet} from "react-native";
 import {router,useFocusEffect} from "expo-router";
-import {token,setToken} from "../../src/api";import {C} from "../../src/theme";
+import {token,setToken} from "../../src/api";import {useTheme} from "../../src/theme";
 export default function Profile(){
+ const {C}=useTheme();const s=useMemo(()=>styles(C),[C]);
  const [logged,setLogged]=useState(false);
  useFocusEffect(useCallback(()=>{token().then(x=>setLogged(!!x))},[]));
  async function logout(){await setToken(null);setLogged(false);router.replace("/")}
@@ -21,4 +22,4 @@ export default function Profile(){
   <Text style={s.legal}>개인정보처리방침과 이용약관은 설정 화면과 공개 웹사이트에서 항상 확인할 수 있습니다.</Text>
  </ScrollView></SafeAreaView>
 }
-const s=StyleSheet.create({safe:{flex:1,backgroundColor:C.bg},content:{padding:16,paddingBottom:100},top:{flexDirection:"row",justifyContent:"space-between",alignItems:"center"},title:{fontSize:26,fontWeight:"900",color:C.navy},gear:{fontSize:21,color:C.muted},desc:{fontSize:11.5,color:C.muted,lineHeight:19,marginVertical:7},btn:{backgroundColor:C.blue,padding:14,borderRadius:13,alignItems:"center",marginTop:14},btnText:{color:"#fff",fontWeight:"900"},ghost:{borderWidth:1,borderColor:C.line,backgroundColor:"#fff",padding:13,borderRadius:13,alignItems:"center",marginTop:9},ghostText:{color:C.navy,fontWeight:"800"},legal:{fontSize:10.5,color:C.muted,lineHeight:17,marginTop:20}});
+const styles=C=>StyleSheet.create({safe:{flex:1,backgroundColor:C.bg},content:{padding:16,paddingBottom:100},top:{flexDirection:"row",justifyContent:"space-between",alignItems:"center"},title:{fontSize:26,fontWeight:"900",color:C.navy},gear:{fontSize:21,color:C.muted},desc:{fontSize:11.5,color:C.muted,lineHeight:19,marginVertical:7},btn:{backgroundColor:C.blue,padding:14,borderRadius:13,alignItems:"center",marginTop:14},btnText:{color:C.onAccent,fontWeight:"900"},ghost:{borderWidth:1,borderColor:C.line,backgroundColor:C.card,padding:13,borderRadius:13,alignItems:"center",marginTop:9},ghostText:{color:C.navy,fontWeight:"800"},legal:{fontSize:10.5,color:C.muted,lineHeight:17,marginTop:20}});

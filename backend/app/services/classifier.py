@@ -16,15 +16,15 @@ def classify(title="",provider="",place="",raw=""):
 def age_range(text):
     t=(text or "").lower()
     m=re.search(r"(\d{1,2})\s*[~\-–]\s*(\d{1,2})\s*세",t)
-    if m:a,b=int(m.group(1)),int(m.group(2));return min(a,b),max(a,b)
+    if m:a,b=int(m.group(1)),int(m.group(2));return min(a,b),max(a,b),True
     m=re.search(r"(\d{1,2})\s*세\s*이상",t)
-    if m:n=int(m.group(1));return (n,12) if n<=12 else (n,n)
-    if "초등저학년" in t or "초등 저학년" in t:return 7,9
-    if "초등고학년" in t or "초등 고학년" in t:return 10,12
-    if "초등" in t:return 7,12
-    if "유아" in t:return 3,7
+    if m:n=int(m.group(1));return (n,12,True) if n<=12 else (n,n,True)
+    if "초등저학년" in t or "초등 저학년" in t:return 7,9,True
+    if "초등고학년" in t or "초등 고학년" in t:return 10,12,True
+    if "초등" in t:return 7,12,True
+    if "유아" in t:return 3,7,True
     ns=[int(x) for x in re.findall(r"(\d{1,2})\s*세",t)]
-    return (min(ns),max(ns)) if ns else (3,12)
+    return (min(ns),max(ns),True) if ns else (3,12,False)
 def money(v):
     if v is None:return None
     s=str(v).replace(",","").replace("원","").strip()

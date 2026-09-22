@@ -18,6 +18,8 @@ venv/
 backend/uvicorn.out.log
 backend/uvicorn.err.log
 *.log
+*.db-wal
+*.db-shm
 
 # ===== Node / Expo =====
 node_modules/
